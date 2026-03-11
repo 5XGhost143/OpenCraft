@@ -14,7 +14,7 @@
 #include "Game/World/MeshBuilder.hpp"
 #include "Game/World/Particle.hpp"
 #include "Game/Player/Camera.hpp"
-#include "Game/Player/Physics.hpp"
+#include "Engine/Core/Physics.hpp"
 #include "Game/Player/Raycaster.hpp"
 #include "Game/UI/HUD.hpp"
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "../../Engine/Core/Types.hpp"
-#include "../World/World.hpp"
+#include "Types.hpp"
+#include "../../Game/World/World.hpp"
 #include <cmath>
 
 constexpr float PLAYER_WIDTH  = 0.6f;

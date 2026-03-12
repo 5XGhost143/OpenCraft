@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.1)
+cmake_minimum_required(VERSION 3.16)
 project(OpenCraft)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -7,7 +7,28 @@ find_package(SDL2   CONFIG REQUIRED)
 find_package(GLEW   CONFIG REQUIRED)
 find_package(OpenGL        REQUIRED)
 
-add_executable(OpenCraft OpenCraft.cpp)
+set(SOURCES
+        OpenCraft.cpp
+
+        Engine/Core/Types.cpp
+        Engine/Core/Math.cpp
+        Engine/Core/Physics.cpp
+        Engine/Input/Input.cpp
+        Engine/Audio/Audio.cpp
+        Engine/Render/Shader.cpp
+        Engine/Render/OutlineRenderer.cpp
+        Engine/Render/ParticleRenderer.cpp
+
+        Game/World/Block.cpp
+        Game/World/World.cpp
+        Game/World/Particle.cpp
+        Game/World/MeshBuilder.cpp
+        Game/Player/Camera.cpp
+        Game/Player/Raycaster.cpp
+        Game/UI/HUD.cpp
+)
+
+add_executable(OpenCraft ${SOURCES})
 
 target_include_directories(OpenCraft PRIVATE
         Engine/Core
@@ -27,7 +48,7 @@ target_link_libraries(OpenCraft
         OpenGL::GL
 )
 
-if (WIN32)
+if(WIN32)
     add_custom_command(TARGET OpenCraft POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:SDL2::SDL2>

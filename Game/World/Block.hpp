@@ -1,22 +1,13 @@
 #pragma once
 #include "../../Engine/Core/Types.hpp"
 
-struct BlockDef {
-    bool solid;
-    bool unbreakable;
+struct BlockDef
+{
+    bool  solid;
+    bool  unbreakable;
     float colorTop[3];
     float colorSide[3];
     float colorBottom[3];
 };
 
-inline const BlockDef& getBlockDef(BlockID id) {
-    static const BlockDef defs[] = {
-        { false, false, {0,0,0},             {0,0,0},             {0,0,0}             },
-        { true,  false, {0.27f,0.60f,0.13f}, {0.42f,0.28f,0.16f}, {0.42f,0.28f,0.16f} },
-        { true,  false, {0.42f,0.28f,0.16f}, {0.42f,0.28f,0.16f}, {0.42f,0.28f,0.16f} },
-        { true,  false, {0.45f,0.45f,0.45f}, {0.45f,0.45f,0.45f}, {0.45f,0.45f,0.45f} },
-        { true,  true,  {0.05f,0.05f,0.05f}, {0.05f,0.05f,0.05f}, {0.05f,0.05f,0.05f} },
-    };
-    if (id >= 5) return defs[0];
-    return defs[id];
-}
+const BlockDef& getBlockDef(BlockID id);

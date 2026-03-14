@@ -100,6 +100,12 @@ if(WIN32)
             $<TARGET_FILE:5XGame>
             $<TARGET_FILE_DIR:OpenCraft>
     )
+
+    add_custom_command(TARGET OpenCraft POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:GLEW::GLEW>
+            $<TARGET_FILE_DIR:OpenCraft>
+    )
 endif()
 
 add_custom_command(TARGET OpenCraft POST_BUILD
@@ -140,6 +146,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         add_custom_command(TARGET OpenCraft POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 $<TARGET_FILE:SDL2::SDL2>
+                "${RELEASE_DIR}"
+        )
+
+        add_custom_command(TARGET OpenCraft POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:GLEW::GLEW>
                 "${RELEASE_DIR}"
         )
     endif()

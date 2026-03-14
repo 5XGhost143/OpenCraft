@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 4.1)
 project(OpenCraft)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -107,3 +107,47 @@ add_custom_command(TARGET OpenCraft POST_BUILD
         ${CMAKE_SOURCE_DIR}/gl_shaders
         $<TARGET_FILE_DIR:OpenCraft>/gl_shaders
 )
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+
+    string(TIMESTAMP BUILD_TIMESTAMP "%Y-%m-%d_%H-%M-%S")
+    set(RELEASE_DIR "${CMAKE_SOURCE_DIR}/Build/${BUILD_TIMESTAMP}")
+
+    add_custom_command(TARGET OpenCraft POST_BUILD
+            COMMENT "[5X Build Tools] Staging release build to ${RELEASE_DIR}"
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${RELEASE_DIR}"
+    )
+
+    add_custom_command(TARGET OpenCraft POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:OpenCraft>
+            "${RELEASE_DIR}"
+    )
+
+    add_custom_command(TARGET OpenCraft POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:5XEngine>
+            "${RELEASE_DIR}"
+    )
+
+    add_custom_command(TARGET OpenCraft POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:5XGame>
+            "${RELEASE_DIR}"
+    )
+
+    if(WIN32)
+        add_custom_command(TARGET OpenCraft POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:SDL2::SDL2>
+                "${RELEASE_DIR}"
+        )
+    endif()
+
+    add_custom_command(TARGET OpenCraft POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/gl_shaders"
+            "${RELEASE_DIR}/gl_shaders"
+    )
+
+endif()

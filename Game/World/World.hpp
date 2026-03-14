@@ -1,5 +1,6 @@
 #pragma once
 #include "Block.hpp"
+#include "../../Engine/Core/IWorldReader.hpp"
 #include <unordered_map>
 
 constexpr int WORLD_W = 32;
@@ -18,14 +19,14 @@ struct IVec3Hash
     size_t operator()(const IVec3& v) const;
 };
 
-class World
+class World : public IWorldReader
 {
 public:
     void generate();
 
-    BlockID getBlock(int x, int y, int z) const;
+    BlockID getBlock(int x, int y, int z) const override;
     void    setBlock(int x, int y, int z, BlockID id);
-    bool    inBounds(int x, int y, int z) const;
+    bool    inBounds(int x, int y, int z) const override;
 
     const std::unordered_map<IVec3, BlockID, IVec3Hash>& allBlocks() const;
 

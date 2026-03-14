@@ -7,9 +7,7 @@ find_package(SDL2   CONFIG REQUIRED)
 find_package(GLEW   CONFIG REQUIRED)
 find_package(OpenGL        REQUIRED)
 
-set(SOURCES
-        OpenCraft.cpp
-
+add_library(5XEngine SHARED
         Engine/Core/Types.cpp
         Engine/Core/Math.cpp
         Engine/Core/Physics.cpp
@@ -18,7 +16,28 @@ set(SOURCES
         Engine/Render/Shader.cpp
         Engine/Render/OutlineRenderer.cpp
         Engine/Render/ParticleRenderer.cpp
+)
 
+set_target_properties(5XEngine PROPERTIES
+        OUTPUT_NAME "5XEngine"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+)
+
+target_include_directories(5XEngine PUBLIC
+        Engine/Core
+        Engine/Render
+        Engine/Input
+        Engine/Audio
+)
+
+target_link_libraries(5XEngine
+        PUBLIC
+        SDL2::SDL2
+        GLEW::GLEW
+        OpenGL::GL
+)
+
+add_library(5XGame SHARED
         Game/World/Block.cpp
         Game/World/World.cpp
         Game/World/Particle.cpp
@@ -28,7 +47,23 @@ set(SOURCES
         Game/UI/HUD.cpp
 )
 
-add_executable(OpenCraft ${SOURCES})
+set_target_properties(5XGame PROPERTIES
+        OUTPUT_NAME "5XGame"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+)
+
+target_include_directories(5XGame PUBLIC
+        Game/World
+        Game/Player
+        Game/UI
+)
+
+target_link_libraries(5XGame
+        PUBLIC
+        5XEngine
+)
+
+add_executable(OpenCraft OpenCraft.cpp)
 
 target_include_directories(OpenCraft PRIVATE
         Engine/Core
@@ -42,16 +77,27 @@ target_include_directories(OpenCraft PRIVATE
 
 target_link_libraries(OpenCraft
         PRIVATE
-        SDL2::SDL2
+        5XEngine
+        5XGame
         SDL2::SDL2main
-        GLEW::GLEW
-        OpenGL::GL
 )
 
 if(WIN32)
     add_custom_command(TARGET OpenCraft POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:SDL2::SDL2>
+            $<TARGET_FILE_DIR:OpenCraft>
+    )
+
+    add_custom_command(TARGET OpenCraft POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:5XEngine>
+            $<TARGET_FILE_DIR:OpenCraft>
+    )
+
+    add_custom_command(TARGET OpenCraft POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:5XGame>
             $<TARGET_FILE_DIR:OpenCraft>
     )
 endif()
